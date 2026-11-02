@@ -1,0 +1,326 @@
+/*
+ * Hivemind Visual Learning — Shared Design System
+ * ================================================
+ * Editorial, textbook-grade styling: high-contrast ink on warm paper,
+ * restrained 2-accent palette, tabular monospace annotations, zero clutter.
+ */
+
+:root {
+  /* Surfaces & Ink */
+  --paper: #fbfbf9;
+  --surface: #ffffff;
+  --surface-subtle: #f4f4f5;
+  --ink: #18181b;
+  --ink-secondary: #27272a;
+  --muted: #52525b;
+  --rule: #e4e4e7;
+  --line-muted: #a1a1aa;
+
+  /* Intentional 2-Accent Palette */
+  --accent: #1d4ed8;       /* Clinical Cobalt — primary selection & active state */
+  --accent-soft: #dbeafe;
+
+  --motor: #b45309;        /* Warm Amber — motor cortex, myelin, key highlights */
+  --motor-soft: #fef3c7;
+
+  /* Semantic Status (for later signal/waveform lessons) */
+  --signal-left: #1d4ed8;  /* Left-hand imagery / Right hemisphere */
+  --signal-right: #b91c1c; /* Right-hand imagery / Left hemisphere */
+  --signal-rest: #52525b;  /* Baseline / Idle rhythm */
+
+  /* Typography */
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Header */
+header {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 20px;
+  margin-bottom: 48px;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 66ch;
+  margin: 0;
+}
+
+/* Sections & Headings */
+section { margin-bottom: 64px; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 10px;
+  margin-bottom: 24px;
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+h2 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Figure Layout */
+.figure-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.95fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .figure-grid { grid-template-columns: 1fr; }
+}
+
+figure {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 20px;
+}
+
+figcaption {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Diagram Annotations & Interactive Regions */
+.region {
+  fill: var(--surface-subtle);
+  stroke: #3f3f46;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+.region:hover { fill: var(--rule); }
+.region.active {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.region.motor-region.active {
+  fill: var(--motor-soft);
+  stroke: var(--motor);
+  stroke-width: 2;
+}
+
+.leader-line {
+  stroke: var(--line-muted);
+  stroke-width: 1;
+  fill: none;
+  pointer-events: none;
+}
+
+.diagram-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ink);
+  cursor: pointer;
+}
+
+.diagram-sublabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--muted);
+  pointer-events: none;
+}
+
+/* Structured Index & Detail Panel */
+.region-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  border-top: 1px solid var(--rule);
+}
+
+.region-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.12s ease;
+}
+
+.region-item:hover { background: var(--surface-subtle); }
+.region-item.active {
+  background: var(--accent-soft);
+  font-weight: 600;
+  color: var(--accent);
+}
+.region-item.motor-item.active {
+  background: var(--motor-soft);
+  color: var(--motor);
+}
+
+.region-item span.code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.detail-panel { padding: 16px 0 0; }
+
+.detail-panel h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  margin: 0 0 6px;
+}
+
+.detail-panel p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--ink-secondary);
+}
+
+.relevance {
+  font-size: 13.5px;
+  color: var(--muted);
+  border-left: 2px solid var(--ink);
+  padding-left: 12px;
+  margin-top: 10px;
+}
+
+/* Numbered Step List */
+.step-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.step-list li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14.5px;
+}
+
+.step-list li:last-child { border-bottom: none; }
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  padding-top: 3px;
+}
+
+/* Controls & Readouts */
+button.action {
+  appearance: none;
+  background: var(--ink);
+  color: #ffffff;
+  border: 1px solid var(--ink);
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+button.action:hover { background: #3f3f46; }
+button.action:disabled { opacity: 0.5; cursor: default; }
+
+button.choice {
+  appearance: none;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 8px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+button.choice:hover { background: var(--surface-subtle); border-color: var(--line-muted); }
+button.choice.active {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+}
+
+.status-readout {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  min-height: 20px;
+}
+
+/* Lesson Footer Navigation */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+  margin-top: 48px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+

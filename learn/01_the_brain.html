@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>01 · The Human Brain — Visual Reference</title>
+  <link rel="stylesheet" href="design-system.css" />
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>The Human Brain</h1>
+      <p class="lead">
+        Functional regions of the cerebral cortex and the electrical structure of a single neuron.
+      </p>
+    </header>
+
+    <!-- SECTION 1: BRAIN REGIONS -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 01</span>
+        <h2>Gross Anatomy: Regions of the Brain (Left Side View)</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <svg viewBox="0 0 520 360" aria-label="Lateral diagram of the human brain">
+            <!-- Orientation -->
+            <text x="16" y="22" class="diagram-sublabel">← FRONT (FOREHEAD)</text>
+            <text x="380" y="22" class="diagram-sublabel">BACK (NECK) →</text>
+
+            <!-- Brainstem -->
+            <path id="reg-brainstem" class="region" onclick="selectRegion('brainstem')"
+              d="M 248,236 L 288,236 L 284,322 L 254,322 Z" />
+
+            <!-- Cerebellum -->
+            <path id="reg-cerebellum" class="region" onclick="selectRegion('cerebellum')"
+              d="M 288,232 C 330,226 376,238 372,272 C 368,298 326,304 288,290 Z" />
+            <!-- Subtle cerebellum folds -->
+            <path d="M 296,248 Q 332,246 364,256 M 294,262 Q 332,262 366,270 M 294,276 Q 328,278 358,284"
+              stroke="#a1a1aa" stroke-width="1" fill="none" pointer-events="none" />
+
+            <!-- Frontal Lobe -->
+            <path id="reg-frontal" class="region active" onclick="selectRegion('frontal')"
+              d="M 88,186 C 82,118 128,58 228,54 L 242,168 C 194,174 148,194 118,208 C 98,206 90,198 88,186 Z" />
+
+            <!-- Motor Cortex (Precentral Gyrus strip) -->
+            <path id="reg-motor" class="region motor-region" onclick="selectRegion('motor')"
+              d="M 218,55 C 228,54 240,55 248,57 L 260,168 L 235,170 Z" />
+
+            <!-- Parietal Lobe -->
+            <path id="reg-parietal" class="region" onclick="selectRegion('parietal')"
+              d="M 248,57 C 314,60 368,90 392,142 L 322,172 L 260,168 Z" />
+
+            <!-- Occipital Lobe -->
+            <path id="reg-occipital" class="region" onclick="selectRegion('occipital')"
+              d="M 392,142 C 412,176 402,218 368,234 L 320,214 L 322,172 Z" />
+
+            <!-- Temporal Lobe -->
+            <path id="reg-temporal" class="region" onclick="selectRegion('temporal')"
+              d="M 150,188 C 186,170 256,166 322,172 L 320,224 C 280,240 208,244 162,224 C 146,214 142,198 150,188 Z" />
+
+            <!-- Subtle cortical fold lines (sulci) for anatomical clarity -->
+            <g stroke="#a1a1aa" stroke-width="1" fill="none" pointer-events="none">
+              <path d="M 118,130 Q 152,118 178,136" />
+              <path d="M 136,92 Q 170,88 198,104" />
+              <path d="M 278,94 Q 312,92 338,112" />
+              <path d="M 294,132 Q 332,126 356,144" />
+              <path d="M 184,202 Q 232,194 278,204" />
+            </g>
+
+            <!-- Leader lines & external labels (no text colliding with shapes) -->
+            <!-- Frontal -->
+            <polyline points="140,104 68,68 48,68" class="leader-line" />
+            <text x="10" y="72" class="diagram-label" onclick="selectRegion('frontal')">Frontal</text>
+
+            <!-- Motor Cortex -->
+            <polyline points="234,62 234,36 254,36" class="leader-line" />
+            <text x="258" y="40" class="diagram-label" onclick="selectRegion('motor')">Motor Cortex</text>
+
+            <!-- Parietal -->
+            <polyline points="326,88 398,58 418,58" class="leader-line" />
+            <text x="422" y="62" class="diagram-label" onclick="selectRegion('parietal')">Parietal</text>
+
+            <!-- Occipital -->
+            <polyline points="390,186 432,186" class="leader-line" />
+            <text x="436" y="190" class="diagram-label" onclick="selectRegion('occipital')">Occipital</text>
+
+            <!-- Temporal -->
+            <polyline points="210,226 140,268 112,268" class="leader-line" />
+            <text x="44" y="272" class="diagram-label" onclick="selectRegion('temporal')">Temporal</text>
+
+            <!-- Cerebellum -->
+            <polyline points="356,274 418,274" class="leader-line" />
+            <text x="422" y="278" class="diagram-label" onclick="selectRegion('cerebellum')">Cerebellum</text>
+
+            <!-- Brainstem -->
+            <polyline points="256,304 198,324 176,324" class="leader-line" />
+            <text x="104" y="328" class="diagram-label" onclick="selectRegion('brainstem')">Brainstem</text>
+          </svg>
+          <figcaption>
+            Click any region on the diagram or in the index to inspect its role. The outer wrinkled surface (the
+            <strong>cerebral cortex</strong>) is where conscious thought, perception, and movement planning happen.
+          </figcaption>
+        </figure>
+
+        <div>
+          <ul class="region-list">
+            <li id="item-frontal" class="region-item active" onclick="selectRegion('frontal')">
+              <span>Frontal Lobe</span><span class="code">01</span>
+            </li>
+            <li id="item-motor" class="region-item motor-item" onclick="selectRegion('motor')">
+              <span>Motor Cortex</span><span class="code">02 · KEY</span>
+            </li>
+            <li id="item-parietal" class="region-item" onclick="selectRegion('parietal')">
+              <span>Parietal Lobe</span><span class="code">03</span>
+            </li>
+            <li id="item-temporal" class="region-item" onclick="selectRegion('temporal')">
+              <span>Temporal Lobe</span><span class="code">04</span>
+            </li>
+            <li id="item-occipital" class="region-item" onclick="selectRegion('occipital')">
+              <span>Occipital Lobe</span><span class="code">05</span>
+            </li>
+            <li id="item-cerebellum" class="region-item" onclick="selectRegion('cerebellum')">
+              <span>Cerebellum</span><span class="code">06</span>
+            </li>
+            <li id="item-brainstem" class="region-item" onclick="selectRegion('brainstem')">
+              <span>Brainstem</span><span class="code">07</span>
+            </li>
+          </ul>
+
+          <div id="region-detail" class="detail-panel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THE NEURON -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 02</span>
+        <h2>Cellular Level: How a Single Neuron Sends a Signal</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <svg viewBox="0 0 520 230" aria-label="Diagram of a multipolar neuron">
+            <!-- Dendrites (Receiving branches) -->
+            <g stroke="#3f3f46" stroke-width="2" fill="none" stroke-linecap="round">
+              <path d="M 42,68 L 86,104" />
+              <path d="M 32,115 L 82,115" />
+              <path d="M 42,162 L 86,126" />
+              <path d="M 60,48 L 76,84" />
+              <path d="M 60,182 L 76,146" />
+              <path d="M 28,88 L 58,92" />
+              <path d="M 28,142 L 58,138" />
+            </g>
+
+            <!-- Cell Body (Soma) -->
+            <circle cx="110" cy="115" r="30" fill="#f4f4f5" stroke="#18181b" stroke-width="2" />
+            <circle cx="110" cy="115" r="9" fill="#d4d4d8" stroke="#52525b" stroke-width="1.2" />
+
+            <!-- Axon (Cable) -->
+            <line x1="140" y1="115" x2="392" y2="115" stroke="#3f3f46" stroke-width="4" />
+
+            <!-- Myelin Sheath Segments (Insulation) -->
+            <rect x="164" y="102" width="52" height="26" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+            <rect x="232" y="102" width="52" height="26" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+            <rect x="300" y="102" width="52" height="26" rx="10" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+
+            <!-- Axon Terminals -->
+            <g stroke="#3f3f46" stroke-width="2" fill="none" stroke-linecap="round">
+              <path d="M 392,115 L 434,82" />
+              <path d="M 392,115 L 442,115" />
+              <path d="M 392,115 L 434,148" />
+            </g>
+            <circle cx="437" cy="82" r="4.5" fill="#1d4ed8" />
+            <circle cx="445" cy="115" r="4.5" fill="#1d4ed8" />
+            <circle cx="437" cy="148" r="4.5" fill="#1d4ed8" />
+
+            <!-- Synapse Gap Indicator -->
+            <line x1="458" y1="68" x2="458" y2="162" stroke="#d4d4d8" stroke-width="1.5" stroke-dasharray="3 3" />
+            <path d="M 468,82 L 494,68 M 468,115 L 498,115 M 468,148 L 494,162" stroke="#a1a1aa" stroke-width="2"
+              stroke-linecap="round" />
+
+            <!-- Animated Impulse -->
+            <circle id="impulse" cx="110" cy="115" r="7" fill="#1d4ed8" opacity="0" />
+
+            <!-- Leader Lines & Labels -->
+            <polyline points="56,74 56,30 16,30" class="leader-line" />
+            <text x="16" y="24" class="diagram-label">01 Dendrites</text>
+
+            <polyline points="110,145 110,192 84,192" class="leader-line" />
+            <text x="48" y="206" class="diagram-label">02 Cell Body (Soma)</text>
+
+            <polyline points="258,102 258,42 224,42" class="leader-line" />
+            <text x="190" y="36" class="diagram-label">03 Axon + Myelin Insulation</text>
+
+            <polyline points="445,115 445,192 414,192" class="leader-line" />
+            <text x="380" y="206" class="diagram-label">04 Synapse (Gap)</text>
+          </svg>
+          <figcaption>
+            A neuron is a biological wire: it collects inputs on the left, decides whether to fire in the center, and
+            sends an electrical pulse down the insulated cable to the right.
+          </figcaption>
+        </figure>
+
+        <div>
+          <ol class="step-list">
+            <li>
+              <span class="step-num">01</span>
+              <div><strong>Dendrites (Inputs):</strong> Branching receivers that pick up chemical signals from
+                neighboring neurons.</div>
+            </li>
+            <li>
+              <span class="step-num">02</span>
+              <div><strong>Cell Body (Decision):</strong> Sums all incoming signals. If the total crosses a threshold,
+                the neuron fires.</div>
+            </li>
+            <li>
+              <span class="step-num">03</span>
+              <div><strong>Axon &amp; Myelin (Wire):</strong> An electrical pulse (~0.1 V inside the cell) races down
+                the axon. Fatty myelin wraps speed it up.</div>
+            </li>
+            <li>
+              <span class="step-num">04</span>
+              <div><strong>Synapse (Handoff):</strong> At the end, the pulse triggers tiny chemical packets that cross
+                the microscopic gap to the next neuron.</div>
+            </li>
+          </ol>
+
+          <button id="fire-btn" class="action" onclick="triggerImpulse()">Trigger Electrical Impulse</button>
+          <div id="impulse-status" class="status-readout">Ready.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const REGIONS = {
+      frontal: {
+        title: "01 · Frontal Lobe",
+        desc: "Located behind the forehead. Governs executive function: planning, attention, decision-making, and voluntary action.",
+        why: "Signal role: Voluntary intent originates in the prefrontal and premotor areas before reaching the motor strip."
+      },
+      motor: {
+        title: "02 · Motor Cortex (Primary Motor Strip)",
+        desc: "A narrow band running ear-to-ear across the top of the cortex. Specific zones map to specific body parts, and neural activity shifts here during both real and imagined movement.",
+        why: "Signal role: Primary target for motor-imagery classification (left-hand vs. right-hand tasks)."
+      },
+      parietal: {
+        title: "03 · Parietal Lobe",
+        desc: "Located behind the motor strip. Integrates touch, pressure, body position (proprioception), and spatial orientation.",
+        why: "Signal role: Works alongside the motor cortex to maintain spatial awareness of the limbs."
+      },
+      temporal: {
+        title: "04 · Temporal Lobe",
+        desc: "Located above the ears on both hemispheres. Processes auditory input, spoken language comprehension, and memory encoding.",
+        why: "Signal role: Associated with auditory and speech-related neural activity rather than limb motor imagery."
+      },
+      occipital: {
+        title: "05 · Occipital Lobe",
+        desc: "Located at the back of the head. Dedicated to decoding visual input from the retina.",
+        why: "Signal role: Produces strong 8–12 Hz alpha oscillations when the eyes are closed."
+      },
+      cerebellum: {
+        title: "06 · Cerebellum",
+        desc: "Positioned beneath the occipital lobe. Coordinates balance, posture, and fine motor timing.",
+        why: "Signal role: Located too deep beneath the posterior skull for reliable scalp EEG isolation."
+      },
+      brainstem: {
+        title: "07 · Brainstem",
+        desc: "Connects the brain to the spinal cord. Regulates involuntary autonomic functions including breathing and heart rate.",
+        why: "Signal role: Autonomic regulation; not involved in voluntary motor commands."
+      }
+    };
+
+    function selectRegion(id) {
+      document.querySelectorAll('.region').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.region-item').forEach(el => el.classList.remove('active'));
+
+      document.getElementById('reg-' + id).classList.add('active');
+      document.getElementById('item-' + id).classList.add('active');
+
+      const info = REGIONS[id];
+      document.getElementById('region-detail').innerHTML = `
+        <h3>${info.title}</h3>
+        <p>${info.desc}</p>
+        <div class="relevance">${info.why}</div>
+      `;
+    }
+
+    let animating = false;
+    function triggerImpulse() {
+      if (animating) return;
+      animating = true;
+      const btn = document.getElementById('fire-btn');
+      const dot = document.getElementById('impulse');
+      const status = document.getElementById('impulse-status');
+      btn.disabled = true;
+
+      let x = 110;
+      dot.setAttribute('opacity', '1');
+      status.textContent = '02 · Cell body threshold reached -> firing...';
+
+      function step() {
+        x += 4.5;
+        dot.setAttribute('cx', x);
+        if (x > 160 && x < 385) {
+          status.textContent = '03 · Electrical pulse traveling along myelinated axon...';
+        } else if (x >= 385) {
+          status.textContent = '04 · Reached axon terminals -> releasing neurotransmitters across synapse.';
+        }
+
+        if (x < 445) {
+          requestAnimationFrame(step);
+        } else {
+          setTimeout(() => {
+            dot.setAttribute('opacity', '0');
+            dot.setAttribute('cx', 110);
+            status.textContent = 'Signal delivered to next neuron.';
+            btn.disabled = false;
+            animating = false;
+          }, 350);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    selectRegion('frontal');
+  </script>
+</body>
+
+</html>

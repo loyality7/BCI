@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>02 · Brain Oscillations &amp; Discovery — Visual Reference</title>
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    canvas.wave-box {
+      width: 100%;
+      height: 120px;
+      display: block;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+    .hz-readout {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 70px;
+      text-align: right;
+    }
+    .mode-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Neural Oscillations &amp; Their Discovery</h1>
+      <p class="lead">
+        How feedback loops between neurons generate rhythmic frequencies, and how those rhythms were first measured in humans.
+      </p>
+    </header>
+
+    <!-- FIG 01: HOW THE BRAIN PRODUCES A FREQUENCY -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 01</span>
+        <h2>How a Rhythm Is Born: The "Go" and "Stop" Loop</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <svg viewBox="0 0 460 155" aria-label="Excitatory and inhibitory feedback loop">
+            <!-- Excitatory ("GO") -->
+            <circle cx="120" cy="76" r="34" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" />
+            <text x="120" y="72" text-anchor="middle" class="diagram-label">"GO" Group</text>
+            <text x="120" y="86" text-anchor="middle" class="diagram-sublabel">(Excitatory)</text>
+
+            <!-- Inhibitory ("STOP") -->
+            <circle cx="340" cy="76" r="34" fill="#fef3c7" stroke="#b45309" stroke-width="2" />
+            <text x="340" y="72" text-anchor="middle" class="diagram-label">"STOP" Group</text>
+            <text x="340" y="86" text-anchor="middle" class="diagram-sublabel">(Inhibitory)</text>
+
+            <!-- Top Arrow: GO -> STOP -->
+            <path d="M 156,60 Q 230,22 304,60" fill="none" stroke="#1d4ed8" stroke-width="2" />
+            <polygon points="304,60 294,52 298,63" fill="#1d4ed8" />
+            <text x="230" y="32" text-anchor="middle" class="diagram-sublabel">1. Pushes voltage UP</text>
+
+            <!-- Bottom Arrow: STOP -> GO -->
+            <path d="M 304,92 Q 230,132 156,92" fill="none" stroke="#b45309" stroke-width="2" />
+            <polygon points="156,92 166,100 162,89" fill="#b45309" />
+            <text x="230" y="132" text-anchor="middle" class="diagram-sublabel">2. Shuts GO off briefly (voltage drops)</text>
+
+            <!-- Active indicator dot -->
+            <circle id="loop-dot" cx="120" cy="76" r="6" fill="#18181b" />
+          </svg>
+
+          <div class="diagram-sublabel" style="margin: 10px 0 6px;">RESULTING WAVE FROM THIS PUSH-PULL CYCLE</div>
+          <canvas id="loop-canvas" width="460" height="120" class="wave-box"></canvas>
+
+          <figcaption>
+            Just like a pendulum swinging back and forth, a group of "Go" neurons turns on "Stop" neurons, which quiet the "Go" neurons until the inhibition fades and the cycle repeats.
+          </figcaption>
+        </figure>
+
+        <div>
+          <p style="margin-top:0;">
+            Cortical oscillations arise from coupled populations of <strong>excitatory</strong> neurons (which increase firing) and <strong>inhibitory</strong> interneurons (which suppress it).
+          </p>
+          <p>
+            When excitatory cells fire, they activate inhibitory cells that temporarily quiet the circuit. Once inhibition decays, the cycle repeats. The round-trip delay of this feedback loop sets the oscillation frequency in <strong>Hertz (Hz)</strong>.
+          </p>
+
+          <div class="slider-row">
+            <span style="font-size:13px; font-weight:600;">Loop Speed:</span>
+            <input id="loop-slider" type="range" min="2" max="25" value="10" oninput="updateLoop()" />
+            <span id="loop-hz" class="hz-readout">10 Hz</span>
+          </div>
+          <div id="loop-note" class="relevance" style="margin-top:0;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG 02: HOW HUMANS DISCOVERED IT -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 02</span>
+        <h2>How Humans Discovered Brain Waves (1875 – 1924)</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <div class="diagram-sublabel" style="margin-bottom:6px;">
+            HANS BERGER'S 1924 EXPERIMENT (CLICK A STATE BELOW)
+          </div>
+          <canvas id="berger-canvas" width="460" height="120" class="wave-box"></canvas>
+          <figcaption id="berger-caption">
+            <strong>Eyes Closed &amp; Relaxed:</strong> A clear, steady ~10 Hz wave appeared on the paper strip. Berger named this the <strong>Alpha wave</strong>.
+          </figcaption>
+        </figure>
+
+        <div>
+          <div class="mode-bar">
+            <button id="btn-closed" class="choice active" onclick="setBerger('closed')">Eyes Closed (Relaxed)</button>
+            <button id="btn-math" class="choice" onclick="setBerger('math')">Eyes Open (Doing Math)</button>
+          </div>
+
+          <ol class="step-list">
+            <li>
+              <span class="step-num">1875</span>
+              <div><strong>Richard Caton (UK):</strong> Placed wires directly on animal brains and noticed tiny electrical currents flickered when light was shone in their eyes.</div>
+            </li>
+            <li>
+              <span class="step-num">1924</span>
+              <div><strong>Hans Berger (Germany):</strong> Placed silver foil strips on his teenage son's scalp—no surgery—and recorded the first human <strong>EEG</strong>.</div>
+            </li>
+            <li>
+              <span class="step-num">KEY</span>
+              <div><strong>The Proof:</strong> When his son closed his eyes and relaxed, a steady 10 Hz wave appeared. The moment he opened his eyes or did mental math, the wave vanished. That proved the wave came from thinking, not heartbeat or muscle twitch.</div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG 03: THE 5 FREQUENCY BANDS -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 03</span>
+        <h2>The 5 Frequency Bands Humans Named</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <canvas id="band-canvas" width="460" height="120" class="wave-box"></canvas>
+          <figcaption>Each band is simply a speed range (cycles per second) linked to a general brain state.</figcaption>
+        </figure>
+
+        <div>
+          <ul class="region-list">
+            <li id="b-delta" class="region-item" onclick="selectBand('delta')"><span>Delta</span><span class="code">0.5 – 4 Hz</span></li>
+            <li id="b-theta" class="region-item" onclick="selectBand('theta')"><span>Theta</span><span class="code">4 – 8 Hz</span></li>
+            <li id="b-alpha" class="region-item active" onclick="selectBand('alpha')"><span>Alpha / Mu</span><span class="code">8 – 12 Hz</span></li>
+            <li id="b-beta" class="region-item motor-item" onclick="selectBand('beta')"><span>Beta</span><span class="code">13 – 30 Hz</span></li>
+            <li id="b-gamma" class="region-item" onclick="selectBand('gamma')"><span>Gamma</span><span class="code">30+ Hz</span></li>
+          </ul>
+          <div id="band-detail" class="detail-panel" style="padding-top:0;"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="lesson-nav">
+      <a href="01_the_brain.html" style="color: var(--ink); text-decoration: none;">← 01 · The Human Brain</a>
+      <a href="03_what_is_bci.html" style="color: var(--accent); text-decoration: none; font-weight: 700;">03 · What Is BCI? →</a>
+    </div>
+  </main>
+
+  <script>
+    let phase = 0;
+    let loopHz = 10;
+    let bergerState = 'closed';
+    let selectedBand = 'alpha';
+
+    const BANDS = {
+      delta: { name: "Delta (0.5 – 4 Hz)", freq: 2.5, amp: 44, color: "#52525b", text: "Deep, dreamless sleep. Slowest, tallest waves." },
+      theta: { name: "Theta (4 – 8 Hz)", freq: 6, amp: 36, color: "#1d4ed8", text: "Drowsiness, light sleep, daydreaming." },
+      alpha: { name: "Alpha / Mu (8 – 12 Hz)", freq: 10, amp: 30, color: "#1d4ed8", text: "Awake & resting. Called Alpha at the back of the head (eyes closed), and Mu over the motor strip (hands resting)." },
+      beta: { name: "Beta (13 – 30 Hz)", freq: 20, amp: 18, color: "#b45309", text: "Alert thinking, focus, and active movement." },
+      gamma: { name: "Gamma (30+ Hz)", freq: 35, amp: 10, color: "#18181b", text: "Fastest ripples, active local processing." }
+    };
+
+    function updateLoop() {
+      loopHz = Number(document.getElementById('loop-slider').value);
+      document.getElementById('loop-hz').textContent = loopHz + ' Hz';
+      const ms = Math.round(1000 / loopHz);
+      document.getElementById('loop-note').innerHTML =
+        `Each full GO → STOP → GO cycle takes <strong>${ms} milliseconds</strong>, creating a <strong>${loopHz} Hz</strong> wave.`;
+    }
+
+    function setBerger(state) {
+      bergerState = state;
+      document.getElementById('btn-closed').classList.toggle('active', state === 'closed');
+      document.getElementById('btn-math').classList.toggle('active', state === 'math');
+      document.getElementById('berger-caption').innerHTML = state === 'closed'
+        ? '<strong>Eyes Closed &amp; Relaxed:</strong> A clear, steady ~10 Hz wave appeared on the paper strip. Berger named this the <strong>Alpha wave</strong>.'
+        : '<strong>Eyes Open / Doing Math:</strong> Neurons stopped idling in sync, so the tall 10 Hz wave flattened into smaller, faster ripples.';
+    }
+
+    function selectBand(id) {
+      selectedBand = id;
+      Object.keys(BANDS).forEach(k => document.getElementById('b-' + k).classList.toggle('active', k === id));
+      const b = BANDS[id];
+      document.getElementById('band-detail').innerHTML = `<h3>${b.name}</h3><p>${b.text}</p>`;
+    }
+
+    function drawWave(id, freq, amp, color, noisy) {
+      const c = document.getElementById(id);
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const sec = x / w;
+        let y = h / 2 + Math.sin(sec * Math.PI * 2 * freq - phase) * amp;
+        if (noisy) y += Math.sin(sec * Math.PI * 2 * 27 - phase * 1.8) * 6;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    function animate() {
+      phase += 0.06;
+      // Animate loop dot around the GO-STOP circuit
+      const angle = phase * (loopHz / 6);
+      const dot = document.getElementById('loop-dot');
+      const dx = 230 + Math.cos(angle) * 110;
+      const dy = 76 + Math.sin(angle) * 34;
+      dot.setAttribute('cx', dx);
+      dot.setAttribute('cy', dy);
+
+      drawWave('loop-canvas', loopHz, Math.max(14, 46 - loopHz * 1.1), '#1d4ed8', false);
+      drawWave('berger-canvas', bergerState === 'closed' ? 10 : 22, bergerState === 'closed' ? 38 : 11, bergerState === 'closed' ? '#1d4ed8' : '#b45309', bergerState === 'math');
+      const b = BANDS[selectedBand];
+      drawWave('band-canvas', b.freq, b.amp, b.color, false);
+
+      requestAnimationFrame(animate);
+    }
+
+    updateLoop();
+    setBerger('closed');
+    selectBand('alpha');
+    animate();
+  </script>
+</body>
+</html>

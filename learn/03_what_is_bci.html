@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>03 · Brain–Computer Interfaces — Visual Reference</title>
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    .mode-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>What Is a Brain–Computer Interface (BCI)?</h1>
+      <p class="lead">
+        A direct communication pathway between measured brain activity and an external device, bypassing peripheral nerves and muscles.
+      </p>
+    </header>
+
+    <!-- FIG 01: WHY PEOPLE WANTED BCI -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 01</span>
+        <h2>Why Humans Needed BCI: The Broken-Wire Problem</h2>
+      </div>
+
+      <div class="figure-grid">
+        <figure>
+          <svg viewBox="0 0 480 210" aria-label="Normal pathway vs BCI bypass pathway">
+            <!-- Brain Box -->
+            <rect x="20" y="75" width="96" height="54" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2" />
+            <text x="68" y="99" text-anchor="middle" class="diagram-label">Brain</text>
+            <text x="68" y="114" text-anchor="middle" class="diagram-sublabel">(Creates Intent)</text>
+
+            <!-- Normal Path (Top) -->
+            <g id="path-normal">
+              <line x1="116" y1="90" x2="210" y2="52" stroke="#3f3f46" stroke-width="2" />
+              <rect x="210" y="28" width="110" height="44" rx="6" fill="#f4f4f5" stroke="#3f3f46" stroke-width="1.5" />
+              <text x="265" y="48" text-anchor="middle" class="diagram-label">Spinal Cord</text>
+              <text x="265" y="62" text-anchor="middle" class="diagram-sublabel">&amp; Muscles</text>
+
+              <line x1="320" y1="50" x2="365" y2="50" stroke="#3f3f46" stroke-width="2" />
+              <rect x="365" y="28" width="95" height="44" rx="6" fill="#f4f4f5" stroke="#3f3f46" stroke-width="1.5" />
+              <text x="412" y="54" text-anchor="middle" class="diagram-label">Hand / Voice</text>
+
+              <!-- Break mark (visible in injury mode) -->
+              <g id="break-mark" opacity="0">
+                <line x1="154" y1="54" x2="174" y2="78" stroke="#b91c1c" stroke-width="3" />
+                <line x1="174" y1="54" x2="154" y2="78" stroke="#b91c1c" stroke-width="3" />
+                <text x="164" y="44" text-anchor="middle" class="diagram-sublabel" fill="#b91c1c">BLOCKED</text>
+              </g>
+            </g>
+
+            <!-- BCI Bypass Path (Bottom) -->
+            <g id="path-bci" opacity="0.2">
+              <line x1="116" y1="114" x2="210" y2="152" stroke="#1d4ed8" stroke-width="2.5" />
+              <rect x="210" y="130" width="110" height="44" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" />
+              <text x="265" y="150" text-anchor="middle" class="diagram-label">BCI System</text>
+              <text x="265" y="164" text-anchor="middle" class="diagram-sublabel">(Reads + Decodes)</text>
+
+              <line x1="320" y1="152" x2="365" y2="152" stroke="#1d4ed8" stroke-width="2.5" />
+              <rect x="365" y="130" width="95" height="44" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2" />
+              <text x="412" y="150" text-anchor="middle" class="diagram-label">Computer</text>
+              <text x="412" y="164" text-anchor="middle" class="diagram-sublabel">/ Device</text>
+            </g>
+          </svg>
+          <figcaption>
+            A BCI does not "control your mind." It builds a detour around muscles and nerves so brain intent can directly trigger a computer or device.
+          </figcaption>
+        </figure>
+
+        <div>
+          <div class="mode-bar">
+            <button id="btn-normal" class="choice active" onclick="setPath('normal')">1. Normal Body Pathway</button>
+            <button id="btn-bci" class="choice" onclick="setPath('bci')">2. The BCI Detour</button>
+          </div>
+
+          <div id="path-detail" class="detail-panel" style="padding-top:0;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIG 02: WHAT COUNTS AS A BCI -->
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 02</span>
+        <h2>The Simple Rule: What Counts as a BCI?</h2>
+      </div>
+
+      <div class="figure-grid">
+        <div>
+          <p style="margin-top:0;">
+            In plain terms, a system is a <strong>Brain–Computer Interface</strong> if and only if it meets three rules:
+          </p>
+          <ol class="step-list">
+            <li>
+              <span class="step-num">01</span>
+              <div><strong>It measures signals directly from the brain</strong> (not from eye blinks, jaw clenches, or arm muscles).</div>
+            </li>
+            <li>
+              <span class="step-num">02</span>
+              <div><strong>It translates those signals in real time</strong> into a digital command or readout.</div>
+            </li>
+            <li>
+              <span class="step-num">03</span>
+              <div><strong>It gives the user feedback</strong> so the brain can see the result and learn to get better at it.</div>
+            </li>
+          </ol>
+        </div>
+
+        <div style="background: var(--surface); border: 1px solid var(--rule); padding: 20px;">
+          <h3 style="font-family: var(--font-serif); margin-top: 0;">How the Idea Formed</h3>
+          <p style="font-size: 14.5px; margin-bottom: 10px;">
+            In <strong>1973</strong>, computer scientist <strong>Jacques Vidal</strong> coined the term <em>Brain–Computer Interface</em> and asked a simple question: if Hans Berger's EEG waves change when we think, can a computer read those waves and use them as an input device?
+          </p>
+          <p style="font-size: 14.5px; margin-bottom: 0; color: var(--muted);">
+            At first it was mostly for patients with severe paralysis (ALS, spinal cord injury, locked-in syndrome). Later, faster computers and AI made it possible to explore non-medical uses too.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="lesson-nav">
+      <a href="02_brain_waves.html" style="color: var(--ink); text-decoration: none;">← 02 · Brain Waves &amp; Frequencies</a>
+      <a href="04_how_bci_works.html" style="color: var(--accent); text-decoration: none; font-weight: 700;">04 · How BCI Works (A to Z) →</a>
+    </div>
+  </main>
+
+  <script>
+    function setPath(mode) {
+      document.getElementById('btn-normal').classList.toggle('active', mode === 'normal');
+      document.getElementById('btn-bci').classList.toggle('active', mode === 'bci');
+
+      document.getElementById('path-normal').setAttribute('opacity', mode === 'normal' ? '1' : '0.45');
+      document.getElementById('break-mark').setAttribute('opacity', mode === 'bci' ? '1' : '0');
+      document.getElementById('path-bci').setAttribute('opacity', mode === 'bci' ? '1' : '0.2');
+
+      const box = document.getElementById('path-detail');
+      if (mode === 'normal') {
+        box.innerHTML = `
+          <h3>Normal Movement</h3>
+          <p>Your brain decides to move your hand → sends electrical commands down the spinal cord → muscles contract → hand moves or types on a keyboard.</p>
+        `;
+      } else {
+        box.innerHTML = `
+          <h3>Why BCI Was Invented</h3>
+          <p>In spinal cord injuries or diseases like ALS, <strong>the brain is still healthy and creating commands</strong>, but the wire (spinal cord or muscles) is broken.</p>
+          <div class="relevance">A BCI bypasses the broken wire by listening directly to the brain and sending the decoded intent straight to a screen, wheelchair, or microcontroller.</div>
+        `;
+      }
+    }
+    setPath('normal');
+  </script>
+</body>
+</html>
+

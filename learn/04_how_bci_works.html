@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>04 · BCI System Architecture — Visual Reference</title>
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    .pipe-step {
+      fill: var(--surface-subtle);
+      stroke: #3f3f46;
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: fill 0.15s ease, stroke 0.15s ease;
+    }
+    .pipe-step:hover { fill: var(--rule); }
+    .pipe-step.active { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.2; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>BCI System Architecture</h1>
+      <p class="lead">
+        The standard six-stage signal processing pipeline used across invasive and non-invasive brain–computer interfaces.
+      </p>
+    </header>
+
+    <section>
+      <div class="section-head">
+        <span class="section-num">FIG 01</span>
+        <h2>The 6-Stage BCI Architecture (Click Any Stage)</h2>
+      </div>
+
+      <figure style="margin-bottom: 28px;">
+        <svg viewBox="0 0 760 175" aria-label="6-stage BCI architecture pipeline">
+          <!-- Stage 1 -->
+          <rect id="s-1" class="pipe-step active" x="14" y="42" width="106" height="66" rx="6" onclick="selectStage(1)" />
+          <text x="67" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(1)">1. Brain</text>
+          <text x="67" y="86" text-anchor="middle" class="diagram-sublabel">Intent / Wave</text>
+
+          <line x1="120" y1="75" x2="138" y2="75" stroke="#52525b" stroke-width="2" />
+
+          <!-- Stage 2 -->
+          <rect id="s-2" class="pipe-step" x="138" y="42" width="106" height="66" rx="6" onclick="selectStage(2)" />
+          <text x="191" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(2)">2. Sensor</text>
+          <text x="191" y="86" text-anchor="middle" class="diagram-sublabel">+ Amplifier</text>
+
+          <line x1="244" y1="75" x2="262" y2="75" stroke="#52525b" stroke-width="2" />
+
+          <!-- Stage 3 -->
+          <rect id="s-3" class="pipe-step" x="262" y="42" width="106" height="66" rx="6" onclick="selectStage(3)" />
+          <text x="315" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(3)">3. Clean</text>
+          <text x="315" y="86" text-anchor="middle" class="diagram-sublabel">Filter Noise</text>
+
+          <line x1="368" y1="75" x2="386" y2="75" stroke="#52525b" stroke-width="2" />
+
+          <!-- Stage 4 -->
+          <rect id="s-4" class="pipe-step" x="386" y="42" width="106" height="66" rx="6" onclick="selectStage(4)" />
+          <text x="439" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(4)">4. Features</text>
+          <text x="439" y="86" text-anchor="middle" class="diagram-sublabel">Find Patterns</text>
+
+          <line x1="492" y1="75" x2="510" y2="75" stroke="#52525b" stroke-width="2" />
+
+          <!-- Stage 5 -->
+          <rect id="s-5" class="pipe-step" x="510" y="42" width="106" height="66" rx="6" onclick="selectStage(5)" />
+          <text x="563" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(5)">5. AI Model</text>
+          <text x="563" y="86" text-anchor="middle" class="diagram-sublabel">Classify State</text>
+
+          <line x1="616" y1="75" x2="634" y2="75" stroke="#52525b" stroke-width="2" />
+
+          <!-- Stage 6 -->
+          <rect id="s-6" class="pipe-step" x="634" y="42" width="112" height="66" rx="6" onclick="selectStage(6)" />
+          <text x="690" y="70" text-anchor="middle" class="diagram-label" onclick="selectStage(6)">6. Action</text>
+          <text x="690" y="86" text-anchor="middle" class="diagram-sublabel">Screen / LED</text>
+
+          <!-- Feedback loop arrow -->
+          <path d="M 690,108 L 690,144 L 67,144 L 67,114" fill="none" stroke="#b45309" stroke-width="1.8" stroke-dasharray="4 3" />
+          <polygon points="67,110 62,120 72,120" fill="#b45309" />
+          <text x="378" y="138" text-anchor="middle" class="diagram-sublabel" fill="#b45309">FEEDBACK LOOP: USER SEES THE RESULT AND ADJUSTS THEIR THINKING</text>
+        </svg>
+        <figcaption>
+          The closed-loop BCI pipeline. Notice the bottom feedback arrow: the computer learns to read the user's brain, and the user's brain also learns how to produce cleaner signals when it sees the output.
+        </figcaption>
+      </figure>
+
+      <div class="figure-grid">
+        <div>
+          <ul class="region-list">
+            <li id="item-1" class="region-item active" onclick="selectStage(1)"><span>1. Brain Signal Generation</span><span class="code">SOURCE</span></li>
+            <li id="item-2" class="region-item" onclick="selectStage(2)"><span>2. Sensor &amp; Amplifier</span><span class="code">HARDWARE</span></li>
+            <li id="item-3" class="region-item" onclick="selectStage(3)"><span>3. Signal Cleaning (Filtering)</span><span class="code">PREPROCESS</span></li>
+            <li id="item-4" class="region-item" onclick="selectStage(4)"><span>4. Feature Extraction</span><span class="code">MATH</span></li>
+            <li id="item-5" class="region-item" onclick="selectStage(5)"><span>5. AI Classifier / Decoder</span><span class="code">ML</span></li>
+            <li id="item-6" class="region-item motor-item" onclick="selectStage(6)"><span>6. Device Output &amp; Feedback</span><span class="code">ACTION</span></li>
+          </ul>
+        </div>
+
+        <div id="stage-detail" class="detail-panel" style="padding-top:0;"></div>
+      </div>
+    </section>
+
+    <div class="lesson-nav">
+      <a href="03_what_is_bci.html" style="color: var(--ink); text-decoration: none;">← 03 · What Is BCI?</a>
+      <a href="05_bci_current_status.html" style="color: var(--accent); text-decoration: none; font-weight: 700;">05 · Current Status of BCI →</a>
+    </div>
+  </main>
+
+  <script>
+    const STAGES = {
+      1: {
+        title: "1. Signal Generation",
+        what: "The user performs a defined mental task—such as motor imagery (left hand, right hand) or resting—producing repeatable shifts in cortical rhythms.",
+        feynman: "Motor imagery modulates 8–30 Hz sensorimotor power over the contralateral motor cortex."
+      },
+      2: {
+        title: "2. Acquisition & Amplification",
+        what: "Electrodes detect scalp potentials on the order of 10–50 microvolts (µV). Low-noise amplifiers boost the signal and digitize it at a fixed sampling rate (e.g., 160 Hz).",
+        feynman: "Converts analog microvolt fluctuations into a discrete multi-channel time series."
+      },
+      3: {
+        title: "3. Preprocessing & Filtering",
+        what: "Raw recordings contain low-frequency drift, 50/60 Hz power-line interference, and ocular or muscular artifacts.",
+        feynman: "A bandpass filter (e.g., 8–30 Hz) isolates the sensorimotor frequency range and attenuates out-of-band noise."
+      },
+      4: {
+        title: "4. Feature Extraction",
+        what: "Continuous signals are segmented into time windows (2–4 s) and projected into spatial or spectral features—such as Common Spatial Patterns (CSP).",
+        feynman: "Reduces high-dimensional channel data to discriminative variance features across motor regions."
+      },
+      5: {
+        title: "5. Classification / Decoding",
+        what: "A trained statistical or neural model (such as LDA or EEGNet) maps the extracted features to discrete class probabilities.",
+        feynman: "Produces a predicted state (Left, Right, or Rest) within milliseconds."
+      },
+      6: {
+        title: "6. Output & Closed-Loop Feedback",
+        what: "The predicted class triggers an external action (cursor movement, display update, or hardware actuator), which the user observes.",
+        feynman: "Visual feedback enables co-adaptation: the user refines mental consistency while the decoder maps the signal."
+      }
+    };
+
+    function selectStage(n) {
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById('s-' + i).classList.toggle('active', i === n);
+        document.getElementById('item-' + i).classList.toggle('active', i === n);
+      }
+      const st = STAGES[n];
+      document.getElementById('stage-detail').innerHTML = `
+        <h3>${st.title}</h3>
+        <p>${st.what}</p>
+        <div class="relevance"><strong>Key mechanism:</strong> ${st.feynman}</div>
+      `;
+    }
+
+    selectStage(1);
+  </script>
+</body>
+</html>
+

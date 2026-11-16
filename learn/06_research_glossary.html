@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>06 · Research &amp; Signal Processing Glossary — Visual Reference</title>
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .glossary-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      font-size: 14.5px;
+    }
+
+    .glossary-table th,
+    .glossary-table td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+
+    .glossary-table th {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      background: var(--surface-subtle);
+    }
+
+    .term-name {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .term-cat {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    .term-row.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Research &amp; Signal Processing Glossary</h1>
+      <p class="lead">
+        Plain-language definitions for every neuroscience, signal-processing, and machine-learning term used in this project.
+      </p>
+    </header>
+
+    <section>
+      <div class="section-head">
+        <span class="section-num">REF 01</span>
+        <h2>Terminology by Category</h2>
+      </div>
+
+      <div class="filter-bar">
+        <button class="choice active" onclick="filterTerms('all', this)">All Terms (22)</button>
+        <button class="choice" onclick="filterTerms('signal', this)">Signals &amp; Filtering</button>
+        <button class="choice" onclick="filterTerms('brain', this)">Brain &amp; Tasks</button>
+        <button class="choice" onclick="filterTerms('model', this)">Features &amp; Models</button>
+        <button class="choice" onclick="filterTerms('eval', this)">Evaluation &amp; Real-Time</button>
+      </div>
+
+      <table class="glossary-table">
+        <thead>
+          <tr>
+            <th style="width: 28%;">Term</th>
+            <th style="width: 44%;">What It Means</th>
+            <th style="width: 28%;">Role in This Project</th>
+          </tr>
+        </thead>
+        <tbody id="glossary-body"></tbody>
+      </table>
+    </section>
+
+    <div class="lesson-nav">
+      <a href="05_bci_current_status.html" style="color: var(--ink); text-decoration: none;">← 05 · Current Status of BCI</a>
+      <span>Complete Reference (01–06)</span>
+    </div>
+  </main>
+
+  <script>
+    const TERMS = [
+      // Signals & Filtering
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "EEG (Electroencephalography)",
+        meaning: "Non-invasive recording of voltage fluctuations along the scalp produced by large populations of cortical neurons.",
+        role: "Input data format (.edf files) for Stage 1–3."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Microvolt (µV)",
+        meaning: "One millionth of a volt (10⁻⁶ V). Scalp EEG signals typically sit between 10 and 100 µV.",
+        role: "Unit of amplitude for raw and filtered brain waves."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Sampling Rate (Hz)",
+        meaning: "Number of voltage measurements recorded per second per channel. 160 Hz means 160 samples every second.",
+        role: "PhysioNet EEGMMIDB is recorded at 160 Hz; Stage 2 replays at this exact speed."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Bandpass Filter (8–30 Hz)",
+        meaning: "A mathematical filter that keeps only frequencies inside a target range (8 to 30 cycles/sec) and removes everything slower or faster.",
+        role: "Removes slow drift, eye blinks, and 60 Hz wall noise while keeping Mu and Beta rhythms."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Causal Filter",
+        meaning: "A filter that computes each output point using only past and current samples—never future samples.",
+        role: "Required for Stage 2 live streaming and ESP32 control."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "PSD (Power Spectral Density)",
+        meaning: "A plot showing how much signal energy exists at each frequency (1 Hz, 2 Hz, ..., 75 Hz).",
+        role: "Used to visually spot 60 Hz electrical noise and Mu/Beta peaks."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Artifact & Line Noise",
+        meaning: "Non-brain electrical interference: eye blinks (huge spikes on frontal Fp1/Fp2), muscle tension, sweat drift, and 50/60 Hz wall electricity.",
+        role: "Must be attenuated before training models."
+      },
+      {
+        cat: "signal", catLabel: "Signals & Filtering",
+        term: "Epoch (Time Window)",
+        meaning: "A fixed-length slice of continuous EEG cut out around an event—for example, 0.5 s to 3.5 s after a task cue.",
+        role: "One epoch equals one training or test sample for the classifier."
+      },
+
+      // Brain & Tasks
+      {
+        cat: "brain", catLabel: "Brain & Tasks",
+        term: "C3, Cz, C4 Channels",
+        meaning: "Standard scalp electrode positions directly over the left motor cortex (C3), center/feet area (Cz), and right motor cortex (C4).",
+        role: "Primary sensors where hand motor imagery appears."
+      },
+      {
+        cat: "brain", catLabel: "Brain & Tasks",
+        term: "Contralateral Control",
+        meaning: "Crossed wiring: the left hemisphere controls the right hand, and the right hemisphere controls the left hand.",
+        role: "Basis for distinguishing Left (T1) from Right (T2) imagery."
+      },
+      {
+        cat: "brain", catLabel: "Brain & Tasks",
+        term: "Mu (8–12 Hz) & Beta (13–30 Hz)",
+        meaning: "Two brain-wave speed bands over the motor strip. Both are strong when muscles are idle and drop during real or imagined movement.",
+        role: "Target frequency range isolated by the 8–30 Hz bandpass filter."
+      },
+      {
+        cat: "brain", catLabel: "Brain & Tasks",
+        term: "ERD (Event-Related Desynchronization)",
+        meaning: "A measurable drop in 8–30 Hz wave power when neurons stop idling in lockstep and begin active processing.",
+        role: "The physical pattern our classifiers detect during T1 and T2."
+      },
+      {
+        cat: "brain", catLabel: "Brain & Tasks",
+        term: "T0, T1, T2 Labels",
+        meaning: "PhysioNet annotation codes in Runs 4, 8, and 12: T0 = Rest, T1 = Imagined Left Fist, T2 = Imagined Right Fist.",
+        role: "The three target classes we predict."
+      },
+
+      // Features & Models
+      {
+        cat: "model", catLabel: "Features & Models",
+        term: "CSP (Common Spatial Patterns)",
+        meaning: "An algorithm that learns weighted combinations of electrodes to maximize variance (power) difference between classes.",
+        role: "Classic feature extractor paired with LDA."
+      },
+      {
+        cat: "model", catLabel: "Features & Models",
+        term: "Covariance Matrix & PyRiemann",
+        meaning: "A matrix measuring how strongly every pair of electrodes rises and falls together. PyRiemann maps these matrices onto curved Riemannian geometry (TangentSpace) for cleaner classification.",
+        role: "Outperformed CSP+LDA in Step 3 (63.4% acc, 5.1% FAR)."
+      },
+      {
+        cat: "model", catLabel: "Features & Models",
+        term: "LDA (Linear Discriminant Analysis)",
+        meaning: "A fast, lightweight statistical classifier that draws flat boundaries between classes.",
+        role: "Final decision layer for both CSP and PyRiemann pipelines (< 5 ms)."
+      },
+      {
+        cat: "model", catLabel: "Features & Models",
+        term: "EEGNet",
+        meaning: "A compact convolutional neural network (~2,000–3,000 parameters) built specifically to learn frequency and spatial filters from raw EEG.",
+        role: "Deep-learning benchmark to compare against PyRiemann."
+      },
+
+      // Evaluation & Real-Time
+      {
+        cat: "eval", catLabel: "Evaluation & Real-Time",
+        term: "Leave-One-Run-Out CV & Data Leakage",
+        meaning: "Training on two recording runs (e.g., Runs 4 & 8) and testing on the unseen third run (Run 12). Splitting overlapping windows randomly causes data leakage and fake high scores.",
+        role: "Ensures reported accuracy reflects genuine generalization."
+      },
+      {
+        cat: "eval", catLabel: "Evaluation & Real-Time",
+        term: "Accuracy & Chance Level",
+        meaning: "Percentage of predictions that match the true label. With 3 balanced classes, random guessing scores 33.3%.",
+        role: "Stage 1 target: >= 70% on calibrated subjects."
+      },
+      {
+        cat: "eval", catLabel: "Evaluation & Real-Time",
+        term: "Macro-F1 Score",
+        meaning: "Average F1-score across all classes equally (0.0 to 1.0), preventing an imbalanced majority class like Rest from hiding poor Left/Right performance.",
+        role: "Tracks balanced 3-class quality."
+      },
+      {
+        cat: "eval", catLabel: "Evaluation & Real-Time",
+        term: "Confusion Matrix",
+        meaning: "A grid comparing Actual vs. Predicted classes so you can see exactly which states get confused with each other.",
+        role: "Diagnoses whether errors are Rest misfires or Left/Right swaps."
+      },
+      {
+        cat: "eval", catLabel: "Evaluation & Real-Time",
+        term: "FAR (False Activation Rate) & Latency",
+        meaning: "FAR is how often Rest is mistakenly predicted as an active command (Left/Right). Latency is the time (ms) to classify one EEG window.",
+        role: "Critical for Stage 2 hardware safety (target: FAR <= 10%, latency < 50 ms)."
+      }
+    ];
+
+    function renderTerms(filter) {
+      const tbody = document.getElementById('glossary-body');
+      tbody.innerHTML = TERMS
+        .filter(t => filter === 'all' || t.cat === filter)
+        .map(t => `
+          <tr>
+            <td>
+              <div class="term-name">${t.term}</div>
+              <div class="term-cat">${t.catLabel}</div>
+            </td>
+            <td>${t.meaning}</td>
+            <td style="color: var(--muted);">${t.role}</td>
+          </tr>
+        `).join('');
+    }
+
+    function filterTerms(cat, btn) {
+      document.querySelectorAll('.filter-bar .choice').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTerms(cat);
+    }
+
+    renderTerms('all');
+  </script>
+</body>
+</html>
+

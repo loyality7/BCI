@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1, Step 2: Filtering & Motor Cortex Power Visualization
+BCI — Stage 1, Step 2: Filtering & Motor Cortex Power Visualization
 ========================================================================
 Purpose:
     1. Apply an 8-30 Hz bandpass filter to Subject 1 (PhysioNet EEGMMIDB, runs 4, 8, 12).

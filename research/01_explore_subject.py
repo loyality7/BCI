@@ -1,5 +1,5 @@
 """
-Hivemind — Research Step 1: Inspect & Visualize Real PhysioNet EEGMMIDB Data
+BCI — Research Step 1: Inspect & Visualize Real PhysioNet EEGMMIDB Data
 ==============================================================================
 Purpose:
     Before building any filters or AI models, inspect one real human subject

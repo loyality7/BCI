@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1 Dataset Downloader
+BCI — Stage 1 Dataset Downloader
 =====================================
 Downloads and caches public motor-imagery EEG datasets into:
     d:\\Projects\\BCI\\datasets\\
@@ -73,7 +73,7 @@ def main() -> None:
         ])
 
     print("=" * 68)
-    print(f"HIVEMIND DATASET DOWNLOADER | MODE: {'FULL' if args.all else 'STARTER COHORTS'}")
+    print(f"BCI DATASET DOWNLOADER | MODE: {'FULL' if args.all else 'STARTER COHORTS'}")
     print(f"Target directory: {DATA_DIR}")
     print("=" * 68)
 

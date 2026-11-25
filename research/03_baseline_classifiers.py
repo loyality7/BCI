@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1, Step 3: Baseline Classifiers (CSP + LDA & PyRiemann)
+BCI — Stage 1, Step 3: Baseline Classifiers (CSP + LDA & PyRiemann)
 ========================================================================
 Evaluates 3-class motor imagery (Rest, Left, Right) using strict
 Leave-One-Run-Out cross-validation on PhysioNet EEGMMIDB (Runs 4, 8, 12).

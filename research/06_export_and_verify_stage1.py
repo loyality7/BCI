@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1 Readiness Verification & Model Export
+BCI — Stage 1 Readiness Verification & Model Export
 ========================================================
 Trains the winning PyRiemann 64-channel model on calibration runs (Runs 4 & 8),
 exports it to models/, reloads it from disk, and verifies all Stage 1 gates

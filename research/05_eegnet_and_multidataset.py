@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1, Step 5: EEGNet & Multi-Dataset Benchmark
+BCI — Stage 1, Step 5: EEGNet & Multi-Dataset Benchmark
 ============================================================
 1. Benchmarks PyRiemann (TS + LDA) across 4 additional cached MOABB datasets:
      - Kaya2018 (3-class: left_hand, right_hand, rest)

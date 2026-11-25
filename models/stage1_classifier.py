@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1 Production Inference & Calibration Module
+BCI — Stage 1 Production Inference & Calibration Module
 ============================================================
 Provides a clean, reusable interface for training, saving, loading, and
 running single-window inference with the winning Stage 1 PyRiemann model.

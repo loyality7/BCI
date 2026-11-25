@@ -1,4 +1,4 @@
-# Hivemind — Research & Engineering Log
+# Non-Invasive Motor-Imagery BCI — Research & Engineering Log
 
 ## Project Stages
 1. **Stage 1 — Offline Brain Signal Recognition (Current):** Load public human EEG datasets (`PhysionetMI`, `Kaya2018`, `BNCI2014_001`, `BNCI2014_004`, `Zhou2016`), filter noise (`8–30 Hz`), extract spatial/riemannian features, and train classifiers (`CSP + LDA`, `PyRiemann`, `EEGNet`) to distinguish `Rest (T0)`, `Imagined Left Hand (T1)`, and `Imagined Right Hand (T2)`.

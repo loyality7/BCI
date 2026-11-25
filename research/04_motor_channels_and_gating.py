@@ -1,5 +1,5 @@
 """
-Hivemind — Stage 1, Step 4: Motor-Cortex Channel Selection & Two-Stage Gating
+BCI — Stage 1, Step 4: Motor-Cortex Channel Selection & Two-Stage Gating
 =============================================================================
 Tests two targeted improvements on PhysioNet EEGMMIDB (Subjects 1-10, Runs 4, 8, 12):
   1. Restrict channels from 64 -> 21 central/motor electrodes (reduces blink/neck noise

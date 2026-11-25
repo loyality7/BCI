@@ -1,6 +1,6 @@
-# Non-Invasive Motor-Imagery BCI
+# Brain–Computer Interface (BCI)
 
-A step-by-step research and engineering project to decode human brain activity (`Rest`, `Imagined Left Hand`, `Imagined Right Hand`) from non-invasive EEG signals and connect those predictions to physical hardware.
+A step-by-step project to recognize simple imagined hand movements (`Rest`, `Left Hand`, `Right Hand`) from scalp EEG recordings and connect those predictions to physical hardware.
 
 ---
 

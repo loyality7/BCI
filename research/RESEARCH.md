@@ -4,7 +4,7 @@
 1. **Stage 1 — Offline Brain Signal Recognition (Current):** Load public human EEG datasets (`PhysionetMI`, `Kaya2018`, `BNCI2014_001`, `BNCI2014_004`, `Zhou2016`), filter noise (`8–30 Hz`), extract spatial/riemannian features, and train classifiers (`CSP + LDA`, `PyRiemann`, `EEGNet`) to distinguish `Rest (T0)`, `Imagined Left Hand (T1)`, and `Imagined Right Hand (T2)`.
 2. **Stage 2 — Real-Time Simulation & Hardware Control:** Replay recorded EEG at native `160 Hz` with causal filtering, a confidence gate to limit false activations, and command output to an ESP32 microcontroller (LED ON/OFF).
 3. **Stage 3 — Live EEG Headset:** Replace file replay with a live consumer/open-source EEG headset and calibrate on personal recordings.
-4. **Stage 4 — AI Integration:** Use reliable 2–3 state brain triggers as hands-free confirmation/selection inputs for an AI assistant.
+4. **Stage 4 — Hands-Free Device / Rover Control:** Scale the single ESP32 LED into a real physical controller (e.g., 2-wheel ESP32 rover steering or smart-home relay control using `Left`, `Right`, `Rest`).
 
 ---
 

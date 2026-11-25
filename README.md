@@ -12,8 +12,8 @@ A step-by-step project to recognize simple imagined hand movements (`Rest`, `Lef
    Replay recorded EEG at its native `160 Hz` speed with causal filtering and a safety gate, sending live `ON` / `OFF` commands to an ESP32 microcontroller.
 3. **Stage 3 — Live EEG Headset**  
    Replace file replay with a live consumer/open-source EEG headset and calibrate the decoder on personal recordings.
-4. **Stage 4 — AI Assistant Triggering**  
-   Use reliable 2–3 state brain commands as hands-free selection/confirmation triggers for an AI assistant.
+4. **Stage 4 — Hands-Free Device / Rover Control**  
+   Scale the single ESP32 LED into a real physical controller—steering a 2-wheel ESP32 rover (`Left`, `Right`, `Rest` = stop) or toggling real room appliances via smart relays.
 
 ---
 

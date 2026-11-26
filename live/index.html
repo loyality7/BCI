@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCI Live Simulator — EEG Headset &amp; Hardware Control</title>
+  <style>
+    :root {
+      --paper: #fbfbf9;
+      --surface: #ffffff;
+      --subtle: #f4f4f5;
+      --ink: #18181b;
+      --muted: #52525b;
+      --rule: #e4e4e7;
+      --accent: #1d4ed8;
+      --accent-soft: #dbeafe;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --red: #b91c1c;
+      --red-soft: #fee2e2;
+      --green: #15803d;
+      --green-soft: #dcfce7;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .wrap { max-width: 1220px; margin: 0 auto; padding: 20px 24px 36px; }
+
+    /* Header & Controls */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .topbar h1 { font-family: var(--serif); font-size: 1.55rem; margin: 0; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .ctrl-group { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); }
+    select, input[type="text"] {
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 6px 8px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+    }
+    button.btn {
+      background: var(--ink);
+      color: #fff;
+      border: 1px solid var(--ink);
+      padding: 7px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    button.btn:hover { background: #3f3f46; }
+    button.btn.stop { background: var(--red); border-color: var(--red); }
+
+    /* Live Pipeline Strip */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .p-step {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    .p-step .p-title { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    .p-step .p-val { font-weight: 700; margin-top: 2px; font-family: var(--mono); }
+    .p-step.ok { border-color: var(--accent); background: var(--accent-soft); }
+    .p-step.warn { border-color: var(--amber); background: var(--amber-soft); }
+    .p-step.active-led { border-color: var(--green); background: var(--green-soft); }
+
+    /* Main 3-Column Workspace */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .panel-title {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    svg { width: 100%; height: auto; display: block; }
+
+    /* Channels Canvas */
+    .ch-row { margin-bottom: 10px; }
+    .ch-head {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      margin-bottom: 3px;
+    }
+    canvas.eeg-trace {
+      width: 100%;
+      height: 54px;
+      display: block;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+    }
+
+    /* Probability Bars */
+    .prob-grid { margin-top: 8px; border-top: 1px solid var(--rule); padding-top: 10px; }
+    .prob-row { display: grid; grid-template-columns: 54px 1fr 48px; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12.5px; }
+    .bar-bg { height: 12px; background: var(--subtle); border: 1px solid var(--rule); position: relative; }
+    .bar-fill { height: 100%; width: 0%; transition: width 0.15s ease; }
+    .gate-line { position: absolute; top: -2px; bottom: -2px; left: 60%; width: 1.5px; background: var(--ink); }
+
+    /* Event Log */
+    .event-log {
+      margin-top: 12px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      height: 112px;
+      overflow-y: auto;
+      color: var(--ink);
+    }
+
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 1px 6px;
+      border: 1px solid var(--rule);
+      background: var(--subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>
+        <h1>BCI Live Simulator</h1>
+      </div>
+      <div class="controls">
+        <label class="ctrl-group">Subject
+          <select id="sel-subject">
+            <option value="7" selected>S007 (Run 12)</option>
+            <option value="4">S004 (Run 12)</option>
+            <option value="1">S001 (Run 12)</option>
+          </select>
+        </label>
+        <label class="ctrl-group">Speed
+          <select id="sel-speed">
+            <option value="1.0">1.0x (Real-Time)</option>
+            <option value="1.5" selected>1.5x</option>
+            <option value="3.0">3.0x</option>
+          </select>
+        </label>
+        <label class="ctrl-group">Arduino Port
+          <input id="inp-port" type="text" placeholder="Optional e.g. COM5" style="width: 135px;" />
+        </label>
+        <button id="btn-toggle" class="btn" onclick="toggleStream()">Start Replay</button>
+      </div>
+    </div>
+
+    <!-- 5-STAGE LIVE PIPELINE -->
+    <div class="pipeline">
+      <div id="p-stream" class="p-step">
+        <div class="p-title">1 · 160 Hz Stream</div>
+        <div id="v-time" class="p-val">t = 0.00 s</div>
+      </div>
+      <div id="p-filter" class="p-step">
+        <div class="p-title">2 · Causal 8–30 Hz</div>
+        <div id="v-rms" class="p-val">— uV RMS</div>
+      </div>
+      <div id="p-guard" class="p-step">
+        <div class="p-title">3 · 150 uV Guard</div>
+        <div id="v-guard" class="p-val">READY</div>
+      </div>
+      <div id="p-model" class="p-step">
+        <div class="p-title">4 · PyRiemann</div>
+        <div id="v-pred" class="p-val">—</div>
+      </div>
+      <div id="p-debounce" class="p-step">
+        <div class="p-title">5 · 3-Hit Debounce</div>
+        <div id="v-led" class="p-val">LED OFF</div>
+      </div>
+    </div>
+
+    <!-- 3-COLUMN WORKSPACE -->
+    <div class="workspace">
+      <!-- LEFT: VECTOR EEG HEADSET -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>EEG Headset Simulation</span>
+          <span id="contact-badge" class="badge">IDLE</span>
+        </div>
+
+        <svg viewBox="0 0 280 280" aria-label="Vector EEG Headset Top View">
+          <!-- Ears -->
+          <ellipse cx="42" cy="145" rx="10" ry="22" fill="#f4f4f5" stroke="#71717a" stroke-width="1.5" />
+          <ellipse cx="238" cy="145" rx="10" ry="22" fill="#f4f4f5" stroke="#71717a" stroke-width="1.5" />
+          <!-- Nose -->
+          <polygon points="140,26 128,46 152,46" fill="#f4f4f5" stroke="#71717a" stroke-width="1.5" />
+          <!-- Head Outline -->
+          <circle cx="140" cy="145" r="98" fill="#ffffff" stroke="#18181b" stroke-width="2" />
+          <!-- Headset Strap Arc -->
+          <path d="M 48,145 Q 140,122 232,145" fill="none" stroke="#d4d4d8" stroke-width="6" />
+
+          <!-- Left & Right Hemisphere Subtle Zones -->
+          <ellipse cx="96" cy="142" rx="30" ry="42" fill="#f4f4f5" opacity="0.7" />
+          <ellipse cx="184" cy="142" rx="30" ry="42" fill="#f4f4f5" opacity="0.7" />
+
+          <!-- Electrodes: C3, Cz, C4, Pz -->
+          <g id="node-C3">
+            <circle id="ring-C3" cx="92" cy="142" r="20" fill="#dbeafe" opacity="0.4" />
+            <circle cx="92" cy="142" r="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2" />
+            <text x="92" y="146" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">C3</text>
+          </g>
+          <g id="node-Cz">
+            <circle id="ring-Cz" cx="140" cy="142" r="20" fill="#f4f4f5" opacity="0.4" />
+            <circle cx="140" cy="142" r="12" fill="#ffffff" stroke="#52525b" stroke-width="2" />
+            <text x="140" y="146" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">Cz</text>
+          </g>
+          <g id="node-C4">
+            <circle id="ring-C4" cx="188" cy="142" r="20" fill="#fee2e2" opacity="0.4" />
+            <circle cx="188" cy="142" r="12" fill="#ffffff" stroke="#b91c1c" stroke-width="2" />
+            <text x="188" y="146" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">C4</text>
+          </g>
+          <g id="node-Pz">
+            <circle id="ring-Pz" cx="140" cy="196" r="18" fill="#f4f4f5" opacity="0.4" />
+            <circle cx="140" cy="196" r="11" fill="#ffffff" stroke="#52525b" stroke-width="1.8" />
+            <text x="140" y="200" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold">Pz</text>
+          </g>
+
+          <text x="92" y="176" text-anchor="middle" font-size="9.5" fill="#52525b">Left Motor</text>
+          <text x="188" y="176" text-anchor="middle" font-size="9.5" fill="#52525b">Right Motor</text>
+        </svg>
+
+        <div style="font-size:12px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 8px;">
+          Actual Cue: <strong id="true-cue" style="color:var(--ink);">—</strong> &nbsp;|&nbsp;
+          C3: <span id="pwr-c3" style="font-family:var(--mono);">—</span> &nbsp;|&nbsp;
+          C4: <span id="pwr-c4" style="font-family:var(--mono);">—</span>
+        </div>
+      </div>
+
+      <!-- CENTER: LIVE CHANNELS & PROBABILITIES -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>Live 8–30 Hz Motor Channels</span>
+          <span id="lat-badge" class="badge">0.0 ms</span>
+        </div>
+
+        <div>
+          <div class="ch-row">
+            <div class="ch-head"><span>C3 (Left Motor)</span><span style="color:var(--muted);">±60 uV</span></div>
+            <canvas id="cv-c3" width="440" height="54" class="eeg-trace"></canvas>
+          </div>
+          <div class="ch-row">
+            <div class="ch-head"><span>Cz (Center)</span><span style="color:var(--muted);">±60 uV</span></div>
+            <canvas id="cv-cz" width="440" height="54" class="eeg-trace"></canvas>
+          </div>
+          <div class="ch-row">
+            <div class="ch-head"><span>C4 (Right Motor)</span><span style="color:var(--muted);">±60 uV</span></div>
+            <canvas id="cv-c4" width="440" height="54" class="eeg-trace"></canvas>
+          </div>
+        </div>
+
+        <div class="prob-grid">
+          <div class="prob-row">
+            <span>Rest</span>
+            <div class="bar-bg"><div id="bar-rest" class="bar-fill" style="background:#71717a;"></div></div>
+            <span id="pct-rest" style="font-family:var(--mono); text-align:right;">0%</span>
+          </div>
+          <div class="prob-row">
+            <span>Left</span>
+            <div class="bar-bg"><div id="bar-left" class="bar-fill" style="background:#1d4ed8;"></div><div class="gate-line"></div></div>
+            <span id="pct-left" style="font-family:var(--mono); text-align:right;">0%</span>
+          </div>
+          <div class="prob-row">
+            <span>Right</span>
+            <div class="bar-bg"><div id="bar-right" class="bar-fill" style="background:#b91c1c;"></div><div class="gate-line"></div></div>
+            <span id="pct-right" style="font-family:var(--mono); text-align:right;">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: VECTOR ARDUINO / ESP32 SIMULATION -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>Arduino / Hardware Simulation</span>
+          <span id="hw-badge" class="badge">USB SERIAL</span>
+        </div>
+
+        <svg viewBox="0 0 260 190" aria-label="Vector Arduino Board">
+          <!-- PCB Board -->
+          <rect x="24" y="24" width="212" height="140" rx="6" fill="#f4f4f5" stroke="#18181b" stroke-width="2" />
+          <!-- USB Connector -->
+          <rect x="8" y="62" width="28" height="44" rx="2" fill="#d4d4d8" stroke="#18181b" stroke-width="1.5" />
+          <text x="22" y="88" text-anchor="middle" font-family="monospace" font-size="9" font-weight="bold">USB</text>
+
+          <!-- MCU Chip -->
+          <rect x="78" y="68" width="110" height="46" rx="2" fill="#27272a" stroke="#18181b" stroke-width="1.5" />
+          <text x="133" y="95" text-anchor="middle" font-family="monospace" font-size="10" fill="#e4e4e7">ATmega328P</text>
+
+          <!-- Pin Headers Top & Bottom -->
+          <rect x="52" y="30" width="164" height="10" fill="#27272a" />
+          <rect x="52" y="148" width="164" height="10" fill="#27272a" />
+
+          <!-- PWR LED (always on during replay) -->
+          <circle id="hw-pwr" cx="206" cy="54" r="5" fill="#d4d4d8" stroke="#52525b" stroke-width="1" />
+          <text x="206" y="69" text-anchor="middle" font-family="monospace" font-size="8.5" fill="#52525b">PWR</text>
+
+          <!-- TX/RX Serial Indicator -->
+          <circle id="hw-tx" cx="72" cy="54" r="4.5" fill="#d4d4d8" stroke="#52525b" stroke-width="1" />
+          <text x="72" y="66" text-anchor="middle" font-family="monospace" font-size="8" fill="#52525b">RX</text>
+
+          <!-- BUILT-IN LED (Pin 13) -->
+          <circle id="hw-led-halo" cx="133" cy="50" r="14" fill="#f59e0b" opacity="0" />
+          <circle id="hw-led" cx="133" cy="50" r="7" fill="#d4d4d8" stroke="#18181b" stroke-width="1.5" />
+          <text x="133" y="136" text-anchor="middle" font-family="monospace" font-size="10" font-weight="bold" id="hw-led-txt">PIN 13 · LED OFF</text>
+        </svg>
+
+        <div class="event-log" id="event-log">Waiting to start...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+    let running = false;
+    const MAX_PTS = 320; // 2 seconds at 160 Hz
+    const buf = { c3: new Array(MAX_PTS).fill(0), cz: new Array(MAX_PTS).fill(0), c4: new Array(MAX_PTS).fill(0) };
+
+    function pushWave(arr, chunk) {
+      for (let i = 0; i < chunk.length; i++) {
+        arr.shift();
+        arr.push(chunk[i]);
+      }
+    }
+
+    function drawTrace(id, arr, color) {
+      const c = document.getElementById(id);
+      const ctx = c.getContext('2d');
+      const w = c.width, h = c.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      for (let i = 0; i < arr.length; i++) {
+        const x = (i / (arr.length - 1)) * w;
+        const clamped = Math.max(-60, Math.min(60, arr[i]));
+        const y = h / 2 - (clamped / 60) * (h / 2 - 4);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    function appendLog(line) {
+      const box = document.getElementById('event-log');
+      if (box.textContent === 'Waiting to start...') box.innerHTML = '';
+      const div = document.createElement('div');
+      div.textContent = line;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function toggleStream() {
+      const btn = document.getElementById('btn-toggle');
+      if (running && ws) {
+        ws.send('STOP');
+        ws.close();
+        running = false;
+        btn.textContent = 'Start Replay';
+        btn.classList.remove('stop');
+        document.getElementById('hw-pwr').setAttribute('fill', '#d4d4d8');
+        return;
+      }
+
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}/ws`);
+      running = true;
+      btn.textContent = 'Stop';
+      btn.classList.add('stop');
+      document.getElementById('event-log').innerHTML = '';
+      document.getElementById('hw-pwr').setAttribute('fill', '#22c55e');
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          subject: Number(document.getElementById('sel-subject').value),
+          speed: Number(document.getElementById('sel-speed').value),
+          port: document.getElementById('inp-port').value.trim(),
+          threshold: 0.60,
+          debounce: 3,
+          artifact_uv: 150.0
+        }));
+        appendLog('Stream started...');
+      };
+
+      ws.onmessage = (ev) => {
+        const d = JSON.parse(ev.data);
+        if (d.done) {
+          running = false;
+          btn.textContent = 'Start Replay';
+          btn.classList.remove('stop');
+          document.getElementById('hw-pwr').setAttribute('fill', '#d4d4d8');
+          appendLog('Replay finished.');
+          return;
+        }
+
+        // Pipeline strip
+        document.getElementById('v-time').textContent = `t = ${d.t.toFixed(2)} s`;
+        document.getElementById('v-rms').textContent = `${d.rms_uv.toFixed(1)} uV RMS`;
+        document.getElementById('lat-badge').textContent = `${d.latency_ms.toFixed(1)} ms`;
+
+        const guardEl = document.getElementById('p-guard');
+        if (d.artifact_blocked) {
+          guardEl.className = 'p-step warn';
+          document.getElementById('v-guard').textContent = `BLOCKED (${d.peak_uv} uV)`;
+          document.getElementById('contact-badge').textContent = 'SPIKE';
+        } else {
+          guardEl.className = 'p-step ok';
+          document.getElementById('v-guard').textContent = 'PASS';
+          document.getElementById('contact-badge').textContent = `GOOD · ${d.rms_uv.toFixed(0)} uV`;
+        }
+
+        document.getElementById('v-pred').textContent = `${d.pred_label} (${d.streak}/${d.debounce})`;
+        document.getElementById('true-cue').textContent = d.true_label;
+
+        const debEl = document.getElementById('p-debounce');
+        debEl.className = d.led_on ? 'p-step active-led' : 'p-step';
+        document.getElementById('v-led').textContent = d.led_on ? 'LED ON' : 'LED OFF';
+
+        // Head power visualization (radius scales with band power)
+        if (d.ch_power) {
+          document.getElementById('pwr-c3').textContent = d.ch_power.C3 ?? '—';
+          document.getElementById('pwr-c4').textContent = d.ch_power.C4 ?? '—';
+          const rC3 = Math.max(13, Math.min(28, 12 + Math.sqrt(d.ch_power.C3 || 100) * 0.55));
+          const rC4 = Math.max(13, Math.min(28, 12 + Math.sqrt(d.ch_power.C4 || 100) * 0.55));
+          document.getElementById('ring-C3').setAttribute('r', rC3);
+          document.getElementById('ring-C4').setAttribute('r', rC4);
+        }
+
+        // Waveforms
+        pushWave(buf.c3, d.c3_wave);
+        pushWave(buf.cz, d.cz_wave);
+        pushWave(buf.c4, d.c4_wave);
+        drawTrace('cv-c3', buf.c3, '#1d4ed8');
+        drawTrace('cv-cz', buf.cz, '#52525b');
+        drawTrace('cv-c4', buf.c4, '#b91c1c');
+
+        // Probabilities
+        const pr = Math.round(d.probs.Rest * 100);
+        const pl = Math.round(d.probs.Left * 100);
+        const pf = Math.round(d.probs.Right * 100);
+        document.getElementById('bar-rest').style.width = pr + '%';
+        document.getElementById('bar-left').style.width = pl + '%';
+        document.getElementById('bar-right').style.width = pf + '%';
+        document.getElementById('pct-rest').textContent = pr + '%';
+        document.getElementById('pct-left').textContent = pl + '%';
+        document.getElementById('pct-right').textContent = pf + '%';
+
+        // Arduino Vector LED
+        document.getElementById('hw-led').setAttribute('fill', d.led_on ? '#f59e0b' : '#d4d4d8');
+        document.getElementById('hw-led-halo').setAttribute('opacity', d.led_on ? '0.35' : '0');
+        document.getElementById('hw-led-txt').textContent = d.led_on ? 'PIN 13 · LED ON' : 'PIN 13 · LED OFF';
+
+        if (d.tx_pulse) {
+          document.getElementById('hw-tx').setAttribute('fill', '#1d4ed8');
+          setTimeout(() => document.getElementById('hw-tx').setAttribute('fill', '#d4d4d8'), 180);
+          appendLog(`t=${d.t.toFixed(2)}s | ${d.pred_label} (True=${d.true_label}) -> LED ${d.led_on ? 'ON' : 'OFF'}`);
+        }
+      };
+    }
+
+    drawTrace('cv-c3', buf.c3, '#1d4ed8');
+    drawTrace('cv-cz', buf.cz, '#52525b');
+    drawTrace('cv-c4', buf.c4, '#b91c1c');
+  </script>
+</body>
+</html>
+

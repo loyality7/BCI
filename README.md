@@ -8,10 +8,10 @@ A step-by-step project to recognize simple imagined hand movements (`Rest`, `Lef
 
 1. **Stage 1 — Learn & Decode Offline (`Done`)**  
    Clean noisy human EEG recordings (`8–30 Hz`), verify motor-cortex signal shifts (`C3` vs. `C4`), benchmark statistical and deep-learning models across public datasets, and export a fast, calibrated classifier (`< 10 ms` per window, `0%` Rest misfires on calibrated subjects).
-2. **Stage 2 — Real-Time Simulation & Hardware Control (`Next`)**  
-   Replay recorded EEG at its native `160 Hz` speed with causal filtering and a safety gate, sending live `ON` / `OFF` commands to an ESP32 microcontroller.
-3. **Stage 3 — Live EEG Headset**  
-   Replace file replay with a live consumer/open-source EEG headset and calibrate the decoder on personal recordings.
+2. **Stage 2 — Real-Time Simulation & Hardware Control (`Done`)**  
+   Replays unseen EEG at `160 Hz` with causal `8–30 Hz` filtering, a `150 µV` artifact guard, `3-hit` debounce, and `2.0 s` cooldown to drive a physical Arduino LED over USB Serial (`COM5`, `6.34 ms` mean latency).
+3. **Stage 3 — Live EEG Headset (`Ready for Hardware`)**  
+   Plug-and-play BrainFlow runner (`live/brainflow_runner.py`) supporting `synthetic`, `ganglion`, and `cyton` boards with 5-minute guided calibration.
 4. **Stage 4 — Hands-Free Device / Rover Control**  
    Scale the single ESP32 LED into a real physical controller—steering a 2-wheel ESP32 rover (`Left`, `Right`, `Rest` = stop) or toggling real room appliances via smart relays.
 

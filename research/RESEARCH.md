@@ -114,6 +114,15 @@ Exported reusable inference module (`models/stage1_classifier.py`) and trained a
 
 ---
 
-## Next Stage · Stage 2 (Real-Time Simulation & ESP32 Control)
-Replay `Subject 004`'s unseen `Run 12` at `160 samples/sec` with causal `8–30 Hz` filtering, feed sliding windows into `models/pyriemann_s004.joblib`, and trigger an ESP32 LED (`Rest` = no action, `Left` = ON, `Right` = OFF).
+## Stage 2 — Real-Time Simulation & Arduino Hardware Control
+
+- **Hardware:** Arduino Uno (`USB-SERIAL CH340` on `COM5`, `115200 baud`) flashed with [led_controller.ino](../hardware/led_controller/led_controller.ino).
+- **Real-Time Engine:** [realtime_replay.py](../simulation/realtime_replay.py) streams unseen `Run 12` at `160 Hz` through a causal 4th-order `8–30 Hz` Butterworth filter (`sosfilt`), a `3.0 s` sliding buffer, a `150 µV` artifact spike guard, a `0.60` confidence gate, a `3-hit` debounce, and a `2.0 s` cooldown lockout.
+
+![Stage 2 Real-Time Replay](../results/stage2_01/01_realtime_replay.png)
+![Stage 2 Variations](../results/stage2_01/02_stage2_variations.png)
+
+### Live Hardware Verification (`COM5`)
+- **Subject `007` (`Run 12` at `15x` speed → Arduino `COM5`):** `10 / 10` LED transitions matched the active cue (`Left` → `LED ON`, `Right` → `LED OFF`), `0` false switches during `Rest`, `38` artifact windows safely blocked, **`6.34 ms`** mean end-to-end latency.
+- **Stage 3 Readiness:** [brainflow_runner.py](../live/brainflow_runner.py) provides a plug-and-play BrainFlow adapter (`synthetic`, `ganglion`, `cyton`) for live headset calibration and control.
 

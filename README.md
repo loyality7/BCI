@@ -2,6 +2,8 @@
 
 A step-by-step project to recognize simple imagined hand movements (`Rest`, `Left Hand`, `Right Hand`) from scalp EEG recordings and connect those predictions to physical hardware.
 
+- **Interactive Visual Lessons:** [loyality7.github.io/BCI](https://loyality7.github.io/BCI/)
+
 ---
 
 ## What We Are Trying to Do (In Stages)
@@ -13,20 +15,23 @@ A step-by-step project to recognize simple imagined hand movements (`Rest`, `Lef
 3. **Stage 3 — Live EEG Headset (`Ready for Hardware`)**  
    Plug-and-play BrainFlow runner (`live/brainflow_runner.py`) supporting `synthetic`, `ganglion`, and `cyton` boards with 5-minute guided calibration.
 4. **Stage 4 — Hands-Free Device / Rover Control**  
-   Scale the single ESP32 LED into a real physical controller—steering a 2-wheel ESP32 rover (`Left`, `Right`, `Rest` = stop) or toggling real room appliances via smart relays.
+   Scale the single ESP32/Arduino LED into a real physical controller—steering a 2-wheel rover (`Left`, `Right`, `Rest` = stop) or toggling room appliances via smart relays.
 
 ---
 
 ## Repository Layout
 
-- **`learn/`** — Visual reference lessons covering brain anatomy, neural oscillations, BCI fundamentals, system architecture, current clinical status, and a glossary ([01](learn/01_the_brain.html) → [06](learn/06_research_glossary.html)).
+- **`learn/`** — Visual reference lessons (`01`–`06`) deployed to [GitHub Pages](https://loyality7.github.io/BCI/).
 - **`research/`** — Stage 1 scripts and the [research log](research/RESEARCH.md) with real-data plots and numbers.
 - **`models/`** — Reusable training, calibration, and inference module ([stage1_classifier.py](models/stage1_classifier.py)).
-- **`results/`** — Generated EEG traces, frequency spectra, confusion matrices, and multi-dataset benchmarks.
+- **`simulation/`** — `160 Hz` causal replay, parameter sweeps, and 4-ch vs. 8-ch hardware benchmarks.
+- **`hardware/`** — Arduino/ESP32 serial LED controller ([led_controller.ino](hardware/led_controller/led_controller.ino)).
+- **`live/`** — Live WebSocket SVG/Canvas simulator ([simulator_server.py](live/simulator_server.py)), Streamlit monitor, and Stage 3 BrainFlow runner ([brainflow_runner.py](live/brainflow_runner.py)).
+- **`results/`** — Generated EEG traces, frequency spectra, confusion matrices, and Stage 2 replay plots.
 
 ---
 
-## Stage 1 Results Summary
+## Stage 1 & 2 Results Summary
 
 - **Winning Pipeline:** `PyRiemann` (`OAS Covariance → Riemannian TangentSpace → Shrinkage LDA`, 64 channels, `8–30 Hz`)
 - **Multi-Dataset Accuracy:**
@@ -34,6 +39,7 @@ A step-by-step project to recognize simple imagined hand movements (`Rest`, `Lef
   - `BNCI2014_004` (2-class, 3 channels, 9 subjects): **`74.1%`** *(chance `50.0%`)*
   - `PhysionetMI` (3-class, 10 subjects): **`63.4%`** mean accuracy, **`5.1%`** Rest False Activation Rate
 - **Calibrated Readiness (`Runs 4+8 → Unseen Run 12`, Subject `004`):** `80.0%` accuracy, `0.0%` Rest misfires, `6.08 ms` latency.
+- **Stage 2 Live Hardware (`Subject 007`, Unseen `Run 12 → Arduino COM5`):** `10 / 10` cue-aligned LED switches, `0` Rest misfires, `6.34 ms` mean end-to-end latency.
 
 ---
 
@@ -42,14 +48,14 @@ A step-by-step project to recognize simple imagined hand movements (`Rest`, `Lef
 ```bash
 # 1. Create Python 3.11 environment and install dependencies
 uv venv --python 3.11 .venv
-uv pip install --python .venv/Scripts/python.exe mne moabb pyriemann scikit-learn scipy matplotlib torch braindecode
+uv pip install --python .venv/Scripts/python.exe mne moabb pyriemann scikit-learn scipy matplotlib torch braindecode brainflow pyserial starlette uvicorn websockets "setuptools<81"
 
 # 2. Download public EEG datasets into datasets/
 .venv/Scripts/python.exe research/download_datasets.py
 
-# 3. Run Stage 1 inspection, filtering, baselines, and model export
-.venv/Scripts/python.exe research/01_explore_subject.py
-.venv/Scripts/python.exe research/02_filter_and_motor_power.py
-.venv/Scripts/python.exe research/03_baseline_classifiers.py
+# 3. Run Stage 1 verification & export models
 .venv/Scripts/python.exe research/06_export_and_verify_stage1.py
+
+# 4. Run Stage 2 live visual simulator (open http://127.0.0.1:8000)
+.venv/Scripts/python.exe live/simulator_server.py
 ```
